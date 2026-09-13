@@ -617,11 +617,11 @@
   .proj-img .project-media {
     width: 100%;
     aspect-ratio: 1 / 1;
-    background-color: #E2DFD7;
+    background: none;
     border-radius: 2px;
     overflow: hidden;
     position: relative;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.05);
+    box-shadow: none;
   }
 
   .proj-img .project-media img {
@@ -663,7 +663,7 @@
     background: none;
     border: none;
     padding: 0;
-    cursor: pointer;
+    cursor: default;
     text-align: left;
     display: flex;
     align-items: center;
@@ -679,21 +679,12 @@
     letter-spacing: 0.5px;
   }
 
-  .project-title-btn:hover .project-name {
-    color: var(--accent);
-  }
-
   .project-title-btn .toggle-arrow {
+    display: none;
     font-size: 13px;
     color: var(--ink-muted);
     transition: transform 0.35s ease, color 0.2s;
-    display: inline-block;
     line-height: 1;
-  }
-
-  .proj-row.open .project-title-btn .toggle-arrow {
-    transform: rotate(45deg);
-    color: var(--ink);
   }
 
   .project-tags {
@@ -704,19 +695,12 @@
     font-family: var(--sans);
   }
 
-  /* Accordion details — expands inside the content column */
+  /* Desktop: project details always open and visible */
   .proj-details {
-    max-height: 0;
-    overflow: hidden;
-    opacity: 0;
-    transition: max-height 0.45s cubic-bezier(0.77, 0, 0.175, 1),
-                opacity 0.28s ease;
-    margin-top: 0;
-  }
-
-  .proj-row.open .proj-details {
-    max-height: 600px;
+    max-height: none;
+    overflow: visible;
     opacity: 1;
+    margin-top: 0;
   }
 
   .proj-details-inner {
@@ -797,7 +781,7 @@
 
   /* ---------- PRICING ---------- */
   .certificates {
-    margin-top: 80px;
+    margin-top: 110px;
   }
 
   /* 3rd yellow glow orb — left side, mirrors hero-glow on the right */
@@ -1262,6 +1246,30 @@
       width: 100%;
       flex: none;
     }
+    .project-title-btn {
+      cursor: pointer;
+    }
+    .project-title-btn:hover .project-name {
+      color: var(--accent);
+    }
+    .project-title-btn .toggle-arrow {
+      display: inline-block;
+    }
+    .proj-row.open .project-title-btn .toggle-arrow {
+      transform: rotate(45deg);
+      color: var(--ink);
+    }
+    .proj-details {
+      max-height: 0;
+      overflow: hidden;
+      opacity: 0;
+      transition: max-height 0.45s cubic-bezier(0.77, 0, 0.175, 1),
+                  opacity 0.28s ease;
+    }
+    .proj-row.open .proj-details {
+      max-height: 800px;
+      opacity: 1;
+    }
     .project-item.item-1 { width: 75%; }
     .project-item.item-2 { width: 75%; margin-top: 0; }
     .project-item.item-3 { width: 70%; margin-left: 0; }
@@ -1281,6 +1289,7 @@
     <a href="#projects">Projects</a>
     <a href="#contact">Contact</a>
     <a href="assets/PriyankaSingh_Resume.pdf" download="Priyanka-Singh-Resume.pdf">Get Resume</a>
+    <a href="blog.html">Blog</a>
   </nav>
 
   <!-- HERO SECTION -->
@@ -1434,7 +1443,7 @@ I'm here to keep learning, keep building, and find interesting problems worth so
       <div class="about-right">
         <div class="about-image-wrapper">
           <div class="about-glow"></div>
-          <img src="assets/portraitmee.png" alt="Priyanka Singh - Portrait">
+          <img src="assets/portraitmee.png" alt="Priyanka Singh - Portrait" loading="lazy">
         </div>
       </div>
     </div>
@@ -1563,7 +1572,7 @@ I'm here to keep learning, keep building, and find interesting problems worth so
       <!-- Fixed image column -->
       <div class="proj-img">
         <div class="project-media">
-          <div class="image-placeholder">[ Project Image ]</div>
+          <img src="assets/project1.png" alt="PCOD Detection project screenshot" loading="lazy">
         </div>
       </div>
 
@@ -1571,7 +1580,7 @@ I'm here to keep learning, keep building, and find interesting problems worth so
       <div class="proj-content">
         <div class="project-num-label">PROJECT 01</div>
         <button class="project-title-btn" onclick="toggleProject('proj1')" aria-expanded="false" id="proj1-btn">
-          <span class="project-name">PCOD DETECTION</span>
+          <span class="project-name">PCOS DETECTION</span>
           <span class="toggle-arrow">&#x2197;</span>
         </button>
         <div class="project-tags">Machine Learning &middot; Healthcare</div>
@@ -1607,12 +1616,12 @@ I'm here to keep learning, keep building, and find interesting problems worth so
       <!-- Fixed image column (rendered on right via flex-direction: row-reverse) -->
       <div class="proj-img">
         <div class="project-media">
-          <div class="image-placeholder">[ Project Image ]</div>
+          <img src="assets/project2.png" alt="BigMart Sales" loading="lazy">
         </div>
       </div>
 
       <!-- Content column -->
-      <div class="proj-content">
+      <!-- <div class="proj-content">
         <div class="project-num-label">PROJECT 02</div>
         <button class="project-title-btn" onclick="toggleProject('proj2')" aria-expanded="false" id="proj2-btn">
           <span class="project-name">COMING SOON</span>
@@ -1623,6 +1632,34 @@ I'm here to keep learning, keep building, and find interesting problems worth so
         <div class="proj-details" id="proj2-details" aria-hidden="true">
           <div class="proj-details-inner">
             <p class="side-desc">Next project coming soon.</p>
+          </div>
+        </div>
+      </div> -->
+
+      <div class="proj-content">
+        <div class="project-num-label">PROJECT 02</div>
+        <button class="project-title-btn" onclick="toggleProject('proj2')" aria-expanded="false" id="proj2-btn">
+          <span class="project-name">BigMart Sales Data Pipeline</span>
+          <span class="toggle-arrow">&#x2197;</span>
+        </button>
+        <div class="project-tags">ELT &middot; Data Engineering</div>
+
+        <!-- Expandable details -->
+        <div class="proj-details" id="proj2-details" aria-hidden="true">
+          <div class="proj-details-inner">
+            <p class="side-section-label">About</p>
+            <p class="side-desc">Designed a normalized MySQL schema (products, outlets, sales) modeling the many-to-many item-outlet
+relationship across 8,523 sales records.</p>
+            <p class="side-mini-desc">Built a Python/Pandas pipeline handling missing values via hierarchical imputation and standardizing inconsistent
+labels.</p>
+            <p class="side-section-label">Tech</p>
+            <ul class="side-tech-list">
+              <li>Python</li>
+              <li>Pandas/NumPy</li>
+              <li>MySQL</li>
+              <li>Google BigQuery</li>
+            </ul>
+            <a href="https://github.com/Priyanka-Singh27/retail-sales-etl-pipeline-" target="_blank" rel="noopener" class="side-view-btn">GITHUB REPO &#x2197;</a>
           </div>
         </div>
       </div>
@@ -1764,6 +1801,7 @@ I'm here to keep learning, keep building, and find interesting problems worth so
   window.scrollTo(0, 0);
 
   function toggleProject(id) {
+    if (window.innerWidth > 640) return;
     var wrap    = document.getElementById(id);
     var btn     = document.getElementById(id + '-btn');
     var details = document.getElementById(id + '-details');
