@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Things I Love — Priyanka Singh</title>
+
+<link rel="icon" type="image/png" href="../assets/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --cream: #F4F0E8;
+    --ink: #111110;
+    --ink-body: #2B2B26;
+    --ink-muted: #7A7A73;
+    --sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --shout: 'Anton', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--cream);
+    color: var(--ink);
+    font-family: var(--sans);
+    overflow-x: hidden;
+  }
+
+  a { color: inherit; text-decoration: none; }
+
+  .page-container {
+    width: 100%;
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 0 40px;
+  }
+
+  nav.topnav {
+    display: flex;
+    align-items: center;
+    gap: 36px;
+    padding: 32px 0 16px;
+    font-size: 13px;
+  }
+  nav.topnav a { opacity: 0.75; transition: opacity 0.2s; }
+  nav.topnav a:hover, nav.topnav a.current { opacity: 1; border-bottom: 1px solid var(--ink); padding-bottom: 2px; }
+
+  .site-header {
+    display: flex;
+    align-items: center;
+    position: relative;
+    justify-content: flex-end;
+  }
+
+  .site-title {
+    font-family: var(--shout);
+    font-size: 50px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: #D32B1E;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  /* ---------- HERO ---------- */
+  .thread-hero {
+    margin-top: 20px;
+  }
+
+  .thread-hero img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  @media (max-width: 760px) {
+    .page-container { padding: 0 20px; }
+    .site-title { font-size: 17px; }
+    nav.topnav { gap: 20px; }
+  }
+
+  /* ---------- MUSIC SECTION ---------- */
+  .music-section {
+    margin-top: 60px;
+    padding-bottom: 80px;
+  }
+
+  .star-border {
+    width: 40%;
+    max-width: 280px;
+    height: auto;
+    display: block;
+    margin-bottom: 50px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-bottom: 88px;
+    padding-top: 20px;
+  }
+
+  .vinyl-stage {
+    position: relative;
+    width: 100%;
+    max-width: 520px;
+    aspect-ratio: 1 / 1;
+    margin: 40px auto 0;
+  }
+
+  .vinyl-disc-wrap {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .vinyl-stage img.vinyl-img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: contain;
+    transform-origin: center center;
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-drag: none;
+  }
+
+  /* Spinning animation for vinyl-red.png */
+  @keyframes spinRecord {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  .vinyl-stage img.vinyl-img.is-spinning {
+    animation: spinRecord 2.2s linear infinite;
+  }
+
+  /* Overlay text layer */
+  .vinyl-overlay-text {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    font-family: var(--sans);
+    color: #111110;
+  }
+
+  /* Table of content title block */
+  .vinyl-toc-header {
+    position: absolute;
+    top: -12%;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    pointer-events: none;
+    z-index: 5;
+  }
+
+  .toc-table {
+    font-size: clamp(38px, 8.2vw, 54px);
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    color: #000;
+    line-height: 0.85;
+    margin-left: -52px;
+  }
+
+  .toc-of {
+    font-size: clamp(34px, 7.4vw, 48px);
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    color: #000;
+    line-height: 0.85;
+    margin-left: 54px;
+    margin-top: -2px;
+  }
+
+  .toc-content {
+    font-size: clamp(45px, 10.5vw, 65px);
+    font-weight: 700;
+    letter-spacing: -0.05em;
+    color: #000;
+    line-height: 0.85;
+    margin-top: -2px;
+    margin-left: 18px;
+  }
+
+  /* Individual clickable and hoverable items */
+  .vinyl-item {
+    position: absolute;
+    cursor: pointer;
+    pointer-events: auto;
+    user-select: none;
+    transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.2s ease;
+    transform-origin: center center;
+    z-index: 10;
+  }
+
+  .vinyl-item:hover {
+    transform: scale(1.15);
+  }
+
+  .vinyl-item:active {
+    transform: scale(1.05);
+  }
+
+  .vinyl-item .num {
+    display: block;
+    font-size: clamp(15px, 3.2vw, 20px);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    color: #000;
+  }
+
+  .vinyl-item .label {
+    display: block;
+    font-size: clamp(14px, 2.9vw, 19px);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+    color: #000;
+  }
+
+  /* Position each item exactly as in reference image */
+  /* Item 01: top-left (10:30 o'clock) */
+  .vinyl-item.i01 {
+    top: 25%;
+    left: 24%;
+    text-align: left;
+  }
+  .vinyl-item.i01 .label {
+    margin-top: 5px;
+    margin-left: 16px;
+  }
+
+  /* Item 02: mid-left outer rim (9 o'clock) */
+  .vinyl-item.i02 {
+    top: 52%;
+    left: 6%;
+    text-align: left;
+  }
+  .vinyl-item.i02 .label {
+    margin-top: 5px;
+    margin-left: 12px;
+  }
+
+  /* Item 03: bottom center (6 o'clock) */
+  .vinyl-item.i03 {
+    top: 75%;
+    left: 45%;
+    text-align: center;
+  }
+  .vinyl-item.i03 .label {
+    margin-top: 14px;
+    margin-left: -28px;
+  }
+
+  /* Item 04: right (2:30 o'clock) */
+  .vinyl-item.i04 {
+    top: 36%;
+    left: 70%;
+    text-align: left;
+  }
+  .vinyl-item.i04 .label {
+    margin-top: 4px;
+    margin-left: 32px;
+  }
+
+  /* Item 05: bottom-right (4:30 o'clock) */
+  .vinyl-item.i05 {
+    top: 66%;
+    left: 72%;
+    text-align: left;
+  }
+  .vinyl-item.i05 .label {
+    margin-top: 12px;
+    margin-left: -20px;
+  }
+
+  /* Playing state highlight */
+  .vinyl-item.is-playing .num,
+  .vinyl-item.is-playing .label {
+    color: #D32B1E;
+  }
+
+  /* MP3 player icon */
+  .mp3-icon {
+    position: absolute;
+    bottom: -6%;
+    right: -28%;
+    width: 190px;
+    height: auto;
+    pointer-events: none;
+    z-index: 8;
+  }
+
+  @media (max-width: 640px) {
+    .music-section { margin-top: 40px; }
+    .star-border { width: 50%; margin-bottom: 30px; }
+    .vinyl-stage { max-width: 340px; }
+    .mp3-icon {
+      width: 100px;
+      right: -10%;
+      bottom: -10%;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="page-container">
+
+  <div class="site-header">
+    <span class="site-title">Thing I Love</span>
+    <nav class="topnav">
+      <a href="../index.html">Portfolio</a>
+    </nav>
+  </div>
+
+  <section class="thread-hero">
+    <img src="threads2.png" alt="Collage of things I love, connected by threads to an illustration of me">
+  </section>
+
+  <!-- ================= MUSIC SECTION ================= -->
+  <section class="music-section">
+    <img src="star-border.png" alt="" class="star-border">
+
+    <div class="vinyl-stage">
+      <div class="vinyl-disc-wrap">
+        <img src="vinyl-red.png" alt="Red vinyl record" class="vinyl-img" id="vinylImg" title="Click to play / stop song">
+      </div>
+
+      <div class="vinyl-overlay-text">
+        <!-- Table of Content Title -->
+        <div class="vinyl-toc-header">
+          <div class="toc-table">table</div>
+          <div class="toc-of">of</div>
+          <div class="toc-content">content</div>
+        </div>
+
+        <!-- 01 sienna -->
+        <div class="vinyl-item i01" data-item="1" title="Play: Sienna">
+          <span class="num">01</span>
+          <span class="label">sienna</span>
+        </div>
+
+        <!-- 02 branding -->
+        <div class="vinyl-item i02" data-item="2" title="Track 02">
+          <span class="num">02</span>
+          <span class="label">branding</span>
+        </div>
+
+        <!-- 03 yellow -->
+        <div class="vinyl-item i03" data-item="3" title="Play: Yellow">
+          <span class="num">03</span>
+          <span class="label">yellow</span>
+        </div>
+
+        <!-- 04 training seasons -->
+        <div class="vinyl-item i04" data-item="4" title="Play: Training Season">
+          <span class="num">04</span>
+          <span class="label">training<br>seasons</span>
+        </div>
+
+        <!-- 05 girls -->
+        <div class="vinyl-item i05" data-item="5" title="Play: Girls">
+          <span class="num">05</span>
+          <span class="label">girls</span>
+        </div>
+      </div>
+
+      <img src="mp3-player.png" alt="" class="mp3-icon">
+    </div>
+  </section>
+
+</div>
+
+<script>
+  (function() {
+    const vinylImg = document.getElementById('vinylImg');
+    const vinylItems = document.querySelectorAll('.vinyl-item');
+
+    // Audio tracks mapping
+    const trackSources = {
+      '1': 'Sienna.mp3',
+      '2': null, // Not decided yet
+      '3': 'yellow.mp3',
+      '4': 'training-seasons.mp3',
+      '5': 'girls.mp3'
+    };
+
+    let currentAudio = null;
+    let currentItemId = null;
+
+    function startSpinning() {
+      vinylImg.classList.add('is-spinning');
+    }
+
+    function stopSpinning() {
+      vinylImg.classList.remove('is-spinning');
+    }
+
+    function stopCurrentTrack() {
+      if (currentAudio) {
+        currentAudio.pause();
+        currentAudio.currentTime = 0;
+        currentAudio = null;
+      }
+      stopSpinning();
+      vinylItems.forEach(i => i.classList.remove('is-playing'));
+      currentItemId = null;
+    }
+
+    function playTrack(itemId) {
+      const src = trackSources[itemId];
+
+      // If clicking the currently playing track -> stop it
+      if (currentItemId === itemId && currentAudio && !currentAudio.paused) {
+        stopCurrentTrack();
+        return;
+      }
+
+      // If another track was playing -> stop it first
+      if (currentAudio) {
+        currentAudio.pause();
+        currentAudio.currentTime = 0;
+        currentAudio = null;
+      }
+      vinylItems.forEach(i => i.classList.remove('is-playing'));
+
+      if (src) {
+        currentAudio = new Audio(src);
+        currentItemId = itemId;
+
+        const targetItem = document.querySelector(`.vinyl-item[data-item="${itemId}"]`);
+        if (targetItem) targetItem.classList.add('is-playing');
+
+        startSpinning();
+
+        currentAudio.play().catch(err => {
+          console.warn('Audio playback error:', err);
+        });
+
+        // When song finishes playing completely
+        currentAudio.addEventListener('ended', function() {
+          stopSpinning();
+          if (targetItem) targetItem.classList.remove('is-playing');
+          currentAudio = null;
+          currentItemId = null;
+        });
+
+        currentAudio.addEventListener('pause', function() {
+          if (currentAudio && currentAudio.paused && !currentAudio.ended) {
+            stopSpinning();
+            if (targetItem) targetItem.classList.remove('is-playing');
+          }
+        });
+      } else {
+        // Track 2 (no audio attached yet) -> toggle rotation
+        if (vinylImg.classList.contains('is-spinning')) {
+          stopSpinning();
+        } else {
+          startSpinning();
+        }
+      }
+    }
+
+    // Attach click listeners to all 5 vinyl items
+    vinylItems.forEach(item => {
+      item.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const itemId = this.getAttribute('data-item');
+        playTrack(itemId);
+      });
+    });
+
+    // Clicking directly on the vinyl record
+    if (vinylImg) {
+      vinylImg.addEventListener('click', function(e) {
+        if (currentAudio && !currentAudio.paused) {
+          stopCurrentTrack();
+        } else if (currentAudio && currentAudio.paused) {
+          currentAudio.play();
+          startSpinning();
+          const targetItem = document.querySelector(`.vinyl-item[data-item="${currentItemId}"]`);
+          if (targetItem) targetItem.classList.add('is-playing');
+        } else {
+          playTrack('1'); // Default to track 1
+        }
+      });
+    }
+  })();
+</script>
+
+</body>
+</html>
