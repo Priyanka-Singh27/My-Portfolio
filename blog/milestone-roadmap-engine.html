@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Building a Personalized, Day-Wise Roadmap Web Application — Priyanka Singh</title>
+<meta name="description" content="How MileStone's Roadmap Engine adapts to real skill gaps, real time budgets, and real slip-ups — instead of handing every student the same static checklist.">
+
+<meta property="og:type" content="article">
+<meta property="og:title" content="Building a Personalized, Day-Wise Roadmap Web Application">
+<meta property="og:description" content="How MileStone's Roadmap Engine adapts to real skill gaps, real time budgets, and real slip-ups.">
+<meta property="og:image" content="https://priyanka-singh-one.vercel.app/assets/about-me.png">
+<meta property="og:url" content="https://priyanka-singh-one.vercel.app/blog/milestone-roadmap-engine.html">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Building a Personalized, Day-Wise Roadmap Web Application">
+<meta name="twitter:description" content="How MileStone's Roadmap Engine adapts to real skill gaps, real time budgets, and real slip-ups.">
+<meta name="twitter:image" content="https://priyanka-singh-one.vercel.app/assets/about-me.png">
+
+<link rel="icon" type="image/png" href="../assets/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@300;400;500;600;700&family=Italiana&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --cream: #F4F0E8;
+    --cream-warm: #EFEAE0;
+    --cream-light: #FAF8F2;
+    --ink: #111110;
+    --ink-body: #2B2B26;
+    --ink-muted: #7A7A73;
+    --hairline: #D2D1C9;
+    --hairline-light: #E2E1D9;
+    --accent-yellow: #FBE042;
+    --serif: 'Cormorant Garamond', Georgia, serif;
+    --display-serif: 'Italiana', 'Cormorant Garamond', Georgia, serif;
+    --sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --mono: 'JetBrains Mono', 'Courier New', monospace;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; background-color: var(--cream); }
+
+  body {
+    font-family: var(--sans);
+    color: var(--ink);
+    background-color: var(--cream);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  a { color: inherit; text-decoration: none; }
+
+  .page-container {
+    width: 100%;
+    max-width: 1080px;
+    margin: 0 auto;
+    background: var(--cream);
+    position: relative;
+    padding: 0 40px;
+  }
+
+  /* ---------- TOP NAV ---------- */
+  nav.topnav {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 36px;
+    padding: 32px 0 16px;
+    font-size: 13px;
+    letter-spacing: 0.3px;
+    z-index: 20;
+    position: relative;
+  }
+  nav.topnav a { color: var(--ink); opacity: 0.85; transition: opacity 0.2s; }
+  nav.topnav a:hover { opacity: 1; }
+  nav.topnav a.current { opacity: 1; border-bottom: 1px solid var(--ink); padding-bottom: 2px; }
+
+  /* ---------- ARTICLE HEADER ---------- */
+  .post-back {
+    display: inline-block;
+    margin-top: 20px;
+    font-size: 12.5px;
+    color: var(--ink-muted);
+    border-bottom: 1px solid var(--hairline);
+    padding-bottom: 2px;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .post-back:hover { color: var(--ink); border-color: var(--ink); }
+
+  .post-header {
+    max-width: 700px;
+    margin: 30px auto 0;
+    padding-bottom: 40px;
+    border-bottom: 1px solid var(--hairline-light);
+  }
+
+  .post-meta-row {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    margin-bottom: 18px;
+  }
+  .post-meta-row span:not(:last-child)::after {
+    content: '·';
+    margin: 0 8px;
+  }
+
+  .post-headline {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 500;
+    font-size: 42px;
+    line-height: 1.15;
+    color: var(--ink);
+    margin-bottom: 18px;
+  }
+
+  .post-deck {
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--ink-body);
+  }
+
+  /* ---------- ARTICLE BODY ---------- */
+  .post-body {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 50px 0 90px;
+    font-size: 16px;
+    line-height: 1.8;
+    color: var(--ink-body);
+  }
+
+  .post-body h2 {
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1.8px;
+    text-transform: uppercase;
+    color: var(--ink);
+    margin: 52px 0 18px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--hairline-light);
+  }
+  .post-body h2:first-child { margin-top: 0; }
+
+  .post-body p { margin-bottom: 20px; }
+
+  .post-body strong { color: var(--ink); font-weight: 600; }
+
+  .post-body em.lede {
+    display: block;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 19px;
+    color: var(--ink-muted);
+    margin-bottom: 8px;
+  }
+
+  .post-body ul, .post-body ol {
+    margin: 0 0 24px 0;
+    padding-left: 0;
+    list-style: none;
+  }
+
+  .post-body ul li, .post-body ol li {
+    position: relative;
+    padding-left: 26px;
+    margin-bottom: 14px;
+  }
+
+  .post-body ul li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: var(--ink-muted);
+  }
+
+  .post-body ol { counter-reset: step; }
+  .post-body ol li { counter-increment: step; }
+  .post-body ol li::before {
+    content: counter(step) '.';
+    position: absolute;
+    left: 0;
+    font-family: var(--serif);
+    font-style: italic;
+    color: var(--ink-muted);
+  }
+
+  .post-body code {
+    font-family: var(--mono);
+    font-size: 13.5px;
+    background: var(--cream-warm);
+    border: 1px solid var(--hairline-light);
+    border-radius: 3px;
+    padding: 1px 6px;
+    color: #6B4A2C;
+  }
+
+  .post-body h3 {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 500;
+    font-size: 18px;
+    color: var(--ink);
+    margin: 28px 0 10px;
+  }
+
+  .post-figure {
+    margin: 40px 0 44px;
+  }
+  .post-figure img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border: 1px solid var(--hairline-light);
+    border-radius: 4px;
+  }
+  .post-figure figcaption {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 14px;
+    color: var(--ink-muted);
+    text-align: center;
+    margin-top: 12px;
+  }
+
+  .post-divider {
+    height: 1px;
+    background: var(--hairline);
+    margin: 60px 0 40px;
+  }
+
+  .post-nav-back {
+    display: block;
+    text-align: center;
+    font-size: 13px;
+    color: var(--ink-muted);
+    margin-bottom: 60px;
+  }
+  .post-nav-back a {
+    border-bottom: 1px solid var(--hairline);
+    padding-bottom: 2px;
+    color: var(--ink);
+    transition: border-color 0.2s;
+  }
+  .post-nav-back a:hover { border-color: var(--ink); }
+
+  /* ---------- FOOTER (identical to blog index) ---------- */
+  .contact-section { margin-top: 20px; position: relative; padding-bottom: 40px; }
+  .contact-title-container { text-align: center; margin-bottom: 50px; }
+  .contact-title {
+    font-family: var(--display-serif);
+    font-size: 32px;
+    letter-spacing: 2px;
+    font-weight: 400;
+    text-transform: uppercase;
+    color: var(--ink);
+  }
+  .contact-cta-wrapper { margin-bottom: 50px; }
+  .contact-cta {
+    font-size: 15px; font-weight: 700; letter-spacing: 0.6px;
+    text-transform: uppercase; line-height: 1.4; color: var(--ink); margin-bottom: 12px;
+  }
+  .contact-link {
+    font-size: 12.5px; color: var(--ink-body);
+    border-bottom: 1px solid var(--ink); padding-bottom: 2px; display: inline-block;
+  }
+  .footer-panel {
+    position: relative; padding: 36px 36px 16px;
+    background: linear-gradient(135deg, rgba(251, 224, 66, 0.25) 0%, rgba(243, 239, 230, 0.1) 45%, rgba(215, 215, 210, 0.45) 100%);
+    border-radius: 4px; overflow: hidden;
+  }
+  .footer-panel::before {
+    content: ''; position: absolute; bottom: -30px; left: -30px; width: 260px; height: 200px;
+    background: radial-gradient(circle, rgba(253, 226, 60, 0.45) 0%, rgba(253, 226, 60, 0) 70%);
+    filter: blur(24px); pointer-events: none;
+  }
+  .footer-top-row {
+    display: flex; align-items: center; justify-content: space-between;
+    position: relative; z-index: 2; margin-bottom: 36px; gap: 20px;
+  }
+  .footer-avatar-wrap { display: flex; align-items: center; justify-content: center; }
+  .footer-avatar {
+    width: 92px; height: 92px; object-fit: contain; display: block;
+    transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.06));
+    user-select: none; cursor: pointer;
+  }
+  .footer-avatar:hover { transform: translateY(-6px) scale(1.08) rotate(-2deg); }
+  .footer-direct { font-size: 13.5px; line-height: 1.7; color: var(--ink); }
+  .footer-email { font-weight: 400; border-bottom: 1px solid rgba(0,0,0,0.15); padding-bottom: 1px; }
+  .back-to-top {
+    display: flex; flex-direction: column; align-items: center;
+    font-size: 10.5px; letter-spacing: 0.6px; text-transform: uppercase;
+    color: var(--ink-muted); transition: color 0.2s;
+  }
+  .back-to-top:hover { color: var(--ink); }
+  .back-to-top-arrow { font-size: 18px; line-height: 1; margin-bottom: 4px; }
+  .footer-social-row {
+    display: flex; gap: 32px; position: relative; z-index: 2;
+    font-size: 12.5px; font-weight: 500; letter-spacing: 1px; text-transform: uppercase;
+    padding-top: 14px; border-top: 1px solid rgba(0,0,0,0.06);
+  }
+  .footer-social-row a { color: var(--ink); opacity: 0.85; transition: opacity 0.2s; }
+  .footer-social-row a:hover { opacity: 1; }
+
+  /* ---------- RESPONSIVE ---------- */
+  @media (max-width: 760px) {
+    .page-container { padding: 0 20px; }
+    nav.topnav { gap: 20px; font-size: 12px; }
+    .post-headline { font-size: 30px; }
+    .post-body { font-size: 15px; padding: 36px 0 60px; }
+    .post-body h2 { font-size: 12px; margin: 40px 0 14px; }
+    .footer-panel { padding: 24px 20px 14px; }
+    .footer-social-row { gap: 20px; font-size: 11px; }
+    .back-to-top { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page-container">
+
+  <nav class="topnav">
+    <a href="index.html">Blog</a>
+    <a href="../index.html">Portfolio</a>
+  </nav>
+
+  <a class="post-back" href="index.html">&larr; All posts</a>
+
+  <header class="post-header">
+    <div class="post-meta-row">
+      <span>Web Application</span>
+      <span>September 2026</span>
+      <span>8 min read</span>
+    </div>
+    <h1 class="post-headline">Building a Personalized, Day-Wise Roadmap Web Application</h1>
+    <p class="post-deck">How MileStone's Roadmap Engine adapts to real skill gaps, real time budgets, and real slip-ups — instead of handing every student the same static checklist.</p>
+  </header>
+
+  <article class="post-body">
+
+    <p><em class="lede">Most developer roadmap tools solve half the problem.</em>Sites like roadmap.sh give you a comprehensive, well-sequenced list of what to learn — but it's the same list for everyone, tracked with nothing more than a checkbox. There's no adjustment for what you already know, no accounting for how much time you actually have per day, and nothing confirming you actually learned a topic to a working standard rather than just marking it done.</p>
+
+    <p><strong>MileStone</strong> was built to close that gap. It's a four-person team project combining a personalized, day-wise learning roadmap, quiz-gated skill verification, an internship application tracker, and a CS-fundamentals tracker with a certificate vault — one integrated platform instead of the usual mix of a spreadsheet, a static roadmap site, and no real verification.</p>
+
+    <p>I owned <strong>The Roadmap Engine</strong>: turning a target role and a skill gap into an actual day-by-day plan that adapts as a student's real progress comes in. This post focuses there, since that's the part I can speak to in real technical depth.</p>
+    <figure class="post-figure">
+      <img src="milestone-architecture.png" alt="MileStone system architecture diagram — client layer, backend API layer with Modules A–D behind a JWT auth middleware, external services, data and storage layer, and the CI/CD deployment pipeline">
+      <figcaption>MileStone's full system architecture — four backend modules behind one shared auth layer, talking to each other only through their own APIs.</figcaption>
+    </figure>
+    <h2>Grounding the curriculum in reality, not LLM guesswork</h2>
+
+    <p>Before any scheduling logic could matter, the content itself had to be right. Rather than asking an LLM to freely invent what a topic like "System Design Basics" should cover, each role's curriculum went through a sourced research process:</p>
+
+    <ol>
+      <li>Scanned 15–20+ real job/internship postings per role to see what's actually required</li>
+      <li>Cross-referenced sequencing against roadmap.sh's core/supplementary classification</li>
+      <li>Ran a dedicated pass through GeeksforGeeks, InterviewBit, and Glassdoor specifically to catch the niche-but-frequently-asked details standard coursework tends to skip — DBMS courses, for example, usually cover transaction isolation levels in the abstract but skip the specific named phenomena (dirty reads, non-repeatable reads, phantom reads) interviewers actually probe for</li>
+      <li>Broke every topic into ordered subtopics, each tagged with an estimated time, a type (practical vs. conceptual), a source category, and a concrete practice prompt</li>
+    </ol>
+
+    <p>That produced three fully-researched role curriculums — Data Analyst (14 topics), Software Developer (20 topics), AI Engineer (18 topics) — as real seed content, not AI filler. A later pass added a <code>quizEligible</code> flag per topic, and deliberately didn't default everything to quiz-eligible — trivia-heavy or discussion-shaped topics like Git or AI Safety &amp; Ethics got set to <code>false</code> after reasoning about what's actually fair to test in MCQ format.</p>
+
+    <h2>Skill-gap analysis: beyond a checkbox</h2>
+
+    <p>The gap analysis started as a simple set-difference — known skills vs. required skills. That was too blunt. It evolved to respect proficiency levels: a self-reported "beginner" isn't enough to exclude a topic from the gap; only "intermediate"/"advanced" or actual quiz-verification does. I also added a prerequisite-consistency check — flagging (advisory, not blocking) inconsistencies like claiming advanced Scikit-learn while never mentioning Pandas. It only checks direct prerequisites, not the full transitive chain — a scope limit I made deliberately rather than by accident.</p>
+
+    <h2>The scheduler: three real iterations</h2>
+
+    <p>This is where most of the engineering actually happened, and it's the part I'm most glad I didn't ship as v1.</p>
+
+    <h3>v1</h3>
+    <p>A fixed 3-track cap, fixed 45-minute task chunks, and the whole roadmap pre-generated upfront in one shot.</p>
+
+    <h3>v2 — rolling-window redesign</h3>
+    <p>Instead of pre-generating everything, it computes "what's next" fresh from real completion data on every fetch. This became necessary once it was clear a pre-generated plan couldn't handle something as basic as a student skipping a day's task.</p>
+
+    <h3>v3 — current</h3>
+    <p>This is where the real adaptivity lives:</p>
+
+    <ul>
+      <li><strong>Adaptive track cap</strong> — derived from <code>dailyMinutes / 20</code> (floored at 1, capped at 4) instead of a hardcoded number, so someone with 30 minutes a day isn't handed a 4-topic-wide daily plan.</li>
+      <li><strong><code>daysPerWeek</code> actually respected</strong> — the scheduler works out which real weekdays count as study days and skips the rest. My first attempt used an "evenly spaced" distribution algorithm, and its own test caught it scheduling a supposed 5-day week onto a Saturday — fixed to a simpler consecutive-from-Monday approach.</li>
+      <li><strong>Subtopic-level chunking</strong> using each outline point's real <code>estimatedMinutes</code>, not a fixed block size.</li>
+      <li><strong>Partial-progress persistence</strong> — if a conceptual chunk gets split across days, its remaining minutes are computed from real completion history summed across all stored tasks sharing that key, rather than resetting to full duration next time it's scheduled.</li>
+      <li><strong>Strict one-day-gap prerequisites</strong> — a topic only unlocks once its prerequisites were completed on a strictly earlier day, never the same day.</li>
+      <li><strong>Smarter cross-track gating</strong> — if a track's next topic is locked, the scheduler looks further ahead in that same track for something else that's unlocked, instead of leaving the whole track idle for the day.</li>
+      <li><strong>Two phases</strong> — a finite "Foundational" phase (walks the real researched curriculum, typically 4–8 weeks) followed by an open-ended "Practice &amp; Mastery" phase that rotates practice content to fill out a realistic multi-month timeline. This resolved a real tension: a roadmap is supposed to span 6–8 months, but there's only about 10 hours of authored curriculum content per role.</li>
+    </ul>
+
+    <h2>Rollover: making "skip a day" actually work</h2>
+
+    <p>The subtlest bug lived here. An early version generated and permanently stored a full 14-day window upfront — so skipping a task didn't reschedule anything; the pre-committed future days stayed exactly as originally planned regardless of what actually happened.</p>
+
+    <p>The fix splits days into <strong>past</strong> (<code>date &lt; today</code>, immutable, never rewritten) and <strong>non-past</strong> (recomputed as needed). On every <code>GET /roadmap/:userId</code>, the engine checks whether any past day has an incomplete task. If so, it discards the stored non-past days and regenerates from today using real completion data — the skipped task naturally reappears first, and everything else shifts later. If nothing needs to roll over, it falls back to a lighter "extend if running low" check, or does nothing — a fast path that avoids burning an LLM call when nothing's changed.</p>
+
+    <p>I verified this end-to-end against the real database, not just synthetically: manually pushed a task into the past with <code>status: "not_started"</code>, and confirmed it reappeared correctly as the first task of the newly-computed "today," with buffer days recalculated and total roadmap length grown to absorb the delay.</p>
+
+    <h2>Resume parsing, with a safety net</h2>
+
+    <p>Resumes go through PDF/DOCX text extraction (worth noting: pinned to <code>pdf-parse@1.1.1</code> specifically, since a plain install grabs an incompatible v2 API), then a constrained LLM call that has to match extracted skills against the role's real topic IDs. There's a defensive filter that drops any topic ID the LLM hallucinates that isn't actually one of the role's real topics — I tested this explicitly by simulating a hallucinated response to confirm the filter actually catches it, rather than assuming it would.</p>
+
+    <h2>Keeping the LLM on a leash</h2>
+
+    <p>All LLM calls route through one provider-agnostic wrapper (<code>llm.service.js</code>) — no other file talks to a provider SDK directly. It ships with a functional mock mode I used throughout early development, and a real Groq implementation (<code>openai/gpt-oss-120b</code>, chosen for structured-output support and context window size) wired in once a provider was picked.</p>
+
+    <p>Task wording is generated once per day, not once per task — all of a day's chunks get worded together in one call for a coherent daily plan and fewer API calls. The LLM is constrained to sequencing/wording only; it never decides curriculum content, since that's already been researched and fixed in the seed data. If a response comes back missing, malformed, or without a chunk's key, that specific chunk falls back to its raw outline text instead of failing the whole day — again tested explicitly with a deliberately broken response.</p>
+
+    <h2>What testing actually caught</h2>
+
+    <p>Every non-trivial piece got a real, runnable test before I called it done — not just a read-through. That process caught three bugs that would've been ugly to find later:</p>
+
+    <ul>
+      <li>An <strong>infinite loop</strong> in the duration-estimate function: a topic with a prerequisite could never "complete" within a dry-run simulation, because the completion map wasn't being updated as the simulation progressed.</li>
+      <li>The <strong><code>daysPerWeek</code> even-spacing bug</strong> mentioned above.</li>
+      <li>A <strong>silent data-loss bug</strong> — deriving the topic list by scanning stored tasks would have permanently dropped any topic not yet reached in the first generated window. Fixed by persisting <code>gapTopicIds</code> directly on the <code>Roadmap</code> document instead of trying to re-derive it.</li>
+    </ul>
+
+    <p>None of these were things I'd have caught by just reading the code back.</p>
+
+  </article>
+
+  <div class="post-divider"></div>
+  <p class="post-nav-back"><a href="index.html">&larr; Back to all posts</a></p>
+
+  <footer class="contact-section" id="contact">
+    <div class="contact-title-container">
+      <h2 class="contact-title">Contact</h2>
+    </div>
+
+    <div class="contact-cta-wrapper" style="text-align:center;">
+      <div class="contact-cta">Interested in working together?</div>
+      <a class="contact-link" href="mailto:priyanka.projects2428@gmail.com">Get in touch</a>
+    </div>
+
+    <div class="footer-panel">
+      <div class="footer-top-row">
+        <div class="footer-direct">
+          <div class="footer-email">priyanka.projects2428@gmail.com</div>
+        </div>
+
+        <div class="footer-avatar-wrap">
+          <img src="../assets/gog-avatar.png" alt="Avatar" class="footer-avatar">
+        </div>
+
+        <a class="back-to-top" href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">
+          <span class="back-to-top-arrow">&#8593;</span>
+          <span>Back to top</span>
+        </a>
+      </div>
+
+      <div class="footer-social-row">
+        <a href="https://linkedin.com/in/priyanka-singh-076661281" target="_blank" rel="noopener">LINKEDIN</a>
+        <a href="https://github.com/Priyanka-Singh27" target="_blank" rel="noopener">GIT HUB</a>
+        <a href="https://leetcode.com/u/Priyanka_Singh27/" target="_blank" rel="noopener">LEETCODE</a>
+      </div>
+    </div>
+  </footer>
+
+</div>
+
+</body>
+</html>
